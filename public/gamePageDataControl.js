@@ -36,7 +36,6 @@ $("#submit").on("click", function(){
                   </tr>
                 `
             )
-
         },
         error: function(err){
             console.log(err);

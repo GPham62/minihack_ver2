@@ -42,18 +42,11 @@ app.get("/api/games/:gameid", (req, res) =>{
 
 let index = 0;
 app.get("/api/games/:gameid/addgame", (req, res) =>{
-    GameModel.findOne({_id: req.params.gameid}).exec((err, gameFound) =>{
+    index++;
+    GameModel.findByIdAndUpdate(req.params.gameid, {"$set": {"round": {number: index, score: {1: 0, 2:0, 3:0, 4:0}}}}, function(err, updated){
         if (err) console.log(err);
-        if (!gameFound || !gameFound._id) res.status(404).send({message: "Game not exist!"});
-        else {
-            index ++;
-            gameFound.round = {number: index, score: {1: 0, 2:0, 3:0, 4:0}};
-            gameFound.save((err, updated) =>{
-                if (err) console.log(err);
-                else res.send({newRound: updated});
-            })           
-        }
-    })
+        else res.send({newRound: updated});
+    });
 })
 
 app.get("/", (req, res)=>{
