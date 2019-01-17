@@ -43,7 +43,7 @@ app.get("/api/games/:gameid", (req, res) =>{
 let index = 0;
 app.get("/api/games/:gameid/addgame", (req, res) =>{
     index++;
-    GameModel.findByIdAndUpdate(req.params.gameid, {"$set": {"round": {number: index, score: {1: 0, 2:0, 3:0, 4:0}}}}, function(err, updated){
+    GameModel.findByIdAndUpdate(req.params.gameid, {"$push": {"round": {score: {1: 0, 2:0, 3:0, 4:0}}}},{new: true}, function(err, updated){
         if (err) console.log(err);
         else res.send({newRound: updated});
     });

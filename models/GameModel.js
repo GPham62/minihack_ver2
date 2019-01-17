@@ -5,7 +5,7 @@ const GameSchema = new Schema({
     name: {type: String},
     sumScore: {type: Number},
     playerName:{type: Object},
-    round: {type: Object}
+    round: {type: Array}
 },{
     timestamps: true,
 });

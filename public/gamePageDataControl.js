@@ -25,14 +25,15 @@ $("#submit").on("click", function(){
         url: "/api/games/" + gameId + "/addgame",
         type: "GET",
         success: function(data){
+            console.log(data.newRound.round.length);
             $(".table tbody").append(
                 `
                 <tr>
-                    <th scope="row">${data.newRound.round.number}</th>
-                    <td id="1"><input type = "number" value = ${data.newRound.round.score["1"]}></td>
-                    <td id="2"><input type = "number" value = ${data.newRound.round.score["2"]}></td>
-                    <td id="3"><input type = "number" value = ${data.newRound.round.score["3"]}></td>
-                    <td id="4"><input type = "number" value = ${data.newRound.round.score["4"]}></td>
+                    <th scope="row">${data.newRound.round.length - 1}</th>
+                    <td id="1"><input type = "number" value = ${data.newRound.round[data.newRound.round.length - 1].score["1"]}></td>
+                    <td id="2"><input type = "number" value = ${data.newRound.round[data.newRound.round.length - 1].score["2"]}></td>
+                    <td id="3"><input type = "number" value = ${data.newRound.round[data.newRound.round.length - 1].score["3"]}></td>
+                    <td id="4"><input type = "number" value = ${data.newRound.round[data.newRound.round.length - 1].score["4"]}></td>
                   </tr>
                 `
             )
