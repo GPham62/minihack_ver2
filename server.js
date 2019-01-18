@@ -18,7 +18,7 @@ app.use(express.static("public"));
 
 app.post("/api/generateNewGame", (req, res)=>{
     GameModel.create({
-        name: "BocBatHo",
+        name: "...",
         sumScore: 0,
         playerName:{player1: req.body.player1Name, player2: req.body.player2Name, player3: req.body.player3Name, player4: req.body.player4Name,},
         round: {},
@@ -27,6 +27,20 @@ app.post("/api/generateNewGame", (req, res)=>{
         else res.send({gameCreated: gameCreated});
     });
 });
+
+app.post("/games/api/:gameid/savedata", (req, res)=>{
+    GameModel.findOne({_id: req.params.gameid}).exec((err, gameFound) =>{
+        if (err) console.log(err);
+        if (!gameFound || !gameFound._id) res.status(404).send({message: "Game not exist!"});
+        else {
+            gameFound.round[req.body.round].score[req.body.player] = req.body.value;
+            gameFound.save((err, updated) =>{
+                if (err) console.log(err);
+                else res.send({updated: updated});
+            })
+        }
+    })
+})
 
 app.get("/games/:gameid", (req,res) =>{
     res.sendFile(__dirname + "/public/gamePage.html");
