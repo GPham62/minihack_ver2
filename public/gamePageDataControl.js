@@ -8,11 +8,7 @@ function loadData(){
             $("#player2Name").replaceWith('<th scope="col" id="#player2Name">' + data.gameFound.playerName.player2 +'</th>');
             $("#player3Name").replaceWith('<th scope="col" id="#player3Name">' + data.gameFound.playerName.player3 +'</th>');
             $("#player4Name").replaceWith('<th scope="col" id="#player4Name">' + data.gameFound.playerName.player4 +'</th>');
-            $("#SOPS1").replaceWith('<td id="#SOPS1">0</td>');
-            $("#SOPS2").replaceWith('<td id="#SOPS2">0</td>');
-            $("#SOPS3").replaceWith('<td id="#SOPS3">0</td>');
-            $("#SOPS4").replaceWith('<td id="#SOPS4">0</td>');
-            $("#SoS").replaceWith('<span id="SoS">0</span>');
+            
         },
         error: function(err){
             console.log(err);
@@ -47,14 +43,14 @@ $("#submit").on("click", function(){
     })
 })
 
-$(document).on('change','input', function(){
-    const data = {round: $(this).attr('id'), player: $(this).attr('name'), value: $(this).attr('value')};
+$(document).on('keyup','input', function(){
+    const data1 = {round: $(this).attr('id'), player: $(this).attr('name'), value: $(this).val()};
     $.ajax({
         url: "/games/api/" + gameId +"/savedata",
         type: "POST",
-        data: data,
+        data: data1,
         success: function(data){
-            alert("SUCCESS");
+            console.log(data);
         },
         error: function(err){
             console.log(err);

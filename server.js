@@ -3,14 +3,14 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const GameModel = require("./models/GameModel");
-
 app.use(bodyParser.urlencoded({extended: false}));
 
 mongoose.connect("mongodb://localhost:27017/gamelist-17", {useNewUrlParser: true}, (err) => {
     if (err) console.log("DB connect fail!", err);
     else console.log("DB connect success!");
 });
+
+const GameModel = require("./models/GameModel");
 
 app.use(express.static("resources"));
 
@@ -21,7 +21,7 @@ app.post("/api/generateNewGame", (req, res)=>{
         name: "...",
         sumScore: 0,
         playerName:{player1: req.body.player1Name, player2: req.body.player2Name, player3: req.body.player3Name, player4: req.body.player4Name,},
-        round: {},
+        round: [],
     }, (err, gameCreated)=>{
         if (err) console.log(err)
         else res.send({gameCreated: gameCreated});
@@ -29,15 +29,21 @@ app.post("/api/generateNewGame", (req, res)=>{
 });
 
 app.post("/games/api/:gameid/savedata", (req, res)=>{
-    GameModel.findOne({_id: req.params.gameid}).exec((err, gameFound) =>{
+    GameModel.findOne({_id: req.params.gameid}, (err, gameFound) =>{
         if (err) console.log(err);
         if (!gameFound || !gameFound._id) res.status(404).send({message: "Game not exist!"});
         else {
+            console.log(req.body);
             gameFound.round[req.body.round].score[req.body.player] = req.body.value;
-            gameFound.save((err, updated) =>{
-                if (err) console.log(err);
-                else res.send({updated: updated});
-            })
+            console.log(gameFound.round[req.body.round].score);
+            GameModel.findByIdAndUpdate(
+                req.params.gameid,
+                { $set: { round:  gameFound.round } },
+                { new: true},
+                (err, gameUpdated) => {
+                    if(err) console.log(err)
+                    else res.send(gameUpdated);
+                });
         }
     })
 })
@@ -57,7 +63,7 @@ app.get("/api/games/:gameid", (req, res) =>{
 let index = 0;
 app.get("/api/games/:gameid/addgame", (req, res) =>{
     index++;
-    GameModel.findByIdAndUpdate(req.params.gameid, {"$push": {"round": {score: {1: 0, 2:0, 3:0, 4:0}}}},{new: true}, function(err, updated){
+    GameModel.findByIdAndUpdate(req.params.gameid, {"$push": {"round": {score: [0,0,0,0]}}},{new: true}, function(err, updated){
         if (err) console.log(err);
         else res.send({newRound: updated});
     });
