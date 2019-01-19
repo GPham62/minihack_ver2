@@ -12,6 +12,8 @@ function loadData(){
             $("#SOPS2").html(data.gameFound.sumScore[1]);
             $("#SOPS3").html(data.gameFound.sumScore[2]);
             $("#SOPS4").html(data.gameFound.sumScore[3]);
+            const sum = data.gameFound.sumScore[0] + data.gameFound.sumScore[1] + data.gameFound.sumScore[2] + data.gameFound.sumScore[3];
+            $("#SOS").html(sum);
         },
         error: function(err){
             console.log(err);
@@ -53,7 +55,12 @@ $(document).on('change','input', function(){
         type: "POST",
         data: data1,
         success: function(data){
-            $("#SOPS1").val() = data.sumScore[0];
+            $("#SOPS1").text(data.sumScore[0]);
+            $("#SOPS2").text(data.sumScore[1]);
+            $("#SOPS3").text(data.sumScore[2]);
+            $("#SOPS4").text(data.sumScore[3]);
+            const total = data.sumScore[0] + data.sumScore[1] + data.sumScore[2] + data.sumScore[3];
+            $('#SOS').text(total);
         },
         error: function(err){
             console.log(err);

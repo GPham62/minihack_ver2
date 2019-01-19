@@ -36,7 +36,6 @@ app.post("/games/api/:gameid/savedata", (req, res)=>{
         else {
             gameFound.round[req.body.round].score[req.body.player] = req.body.value;
             gameFound.sumScore[req.body.player] = gameFound.sumScore[req.body.player]*1 + req.body.value*1;
-            console.log(gameFound.sumScore[req.body.player]);
             GameModel.findByIdAndUpdate(
                 req.params.gameid,
                 {
