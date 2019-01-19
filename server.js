@@ -22,6 +22,7 @@ app.post("/api/generateNewGame", (req, res)=>{
         sumScore: 0,
         playerName:{player1: req.body.player1Name, player2: req.body.player2Name, player3: req.body.player3Name, player4: req.body.player4Name,},
         round: [],
+        sumScore: [0, 0, 0, 0],
     }, (err, gameCreated)=>{
         if (err) console.log(err)
         else res.send({gameCreated: gameCreated});
@@ -33,12 +34,14 @@ app.post("/games/api/:gameid/savedata", (req, res)=>{
         if (err) console.log(err);
         if (!gameFound || !gameFound._id) res.status(404).send({message: "Game not exist!"});
         else {
-            console.log(req.body);
             gameFound.round[req.body.round].score[req.body.player] = req.body.value;
-            console.log(gameFound.round[req.body.round].score);
+            gameFound.sumScore[req.body.player] = gameFound.sumScore[req.body.player]*1 + req.body.value*1;
+            console.log(gameFound.sumScore[req.body.player]);
             GameModel.findByIdAndUpdate(
                 req.params.gameid,
-                { $set: { round:  gameFound.round } },
+                {
+                     $set: { round:  gameFound.round, sumScore: gameFound.sumScore},
+                },
                 { new: true},
                 (err, gameUpdated) => {
                     if(err) console.log(err)
@@ -46,7 +49,8 @@ app.post("/games/api/:gameid/savedata", (req, res)=>{
                 });
         }
     })
-})
+});
+
 
 app.get("/games/:gameid", (req,res) =>{
     res.sendFile(__dirname + "/public/gamePage.html");
@@ -61,9 +65,15 @@ app.get("/api/games/:gameid", (req, res) =>{
 })
 
 let index = 0;
-app.get("/api/games/:gameid/addgame", (req, res) =>{
+app.get("/api/games/:gameid/addround", (req, res) =>{
     index++;
-    GameModel.findByIdAndUpdate(req.params.gameid, {"$push": {"round": {score: [0,0,0,0]}}},{new: true}, function(err, updated){
+    GameModel.findByIdAndUpdate(
+        req.params.gameid,
+        {
+            "$push": {"round": {score: [0,0,0,0]}},
+        },
+        {new: true},
+        function(err, updated){
         if (err) console.log(err);
         else res.send({newRound: updated});
     });
