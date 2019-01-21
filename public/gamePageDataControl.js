@@ -14,6 +14,19 @@ function loadData(){
             $("#SOPS4").html(data.gameFound.sumScore[3]);
             const sum = data.gameFound.sumScore[0] + data.gameFound.sumScore[1] + data.gameFound.sumScore[2] + data.gameFound.sumScore[3];
             $("#SOS").html(sum);
+            for(i=0; i<data.gameFound.round.length; i++){
+                $(".table tbody").append(
+                    `
+                    <tr>
+                        <th scope="row">${i + 1}</th>
+                        <td><input type = "number" id ="${i + 1}" name ="0" value = ${data.gameFound.round[i].score["0"]}></td>
+                        <td><input type = "number" id ="${i + 1}" name="1" value = ${data.gameFound.round[i].score["1"]}></td>
+                        <td><input type = "number" id ="${i + 1}" name="2" value = ${data.gameFound.round[i].score["2"]}></td>
+                        <td><input type = "number" id ="${i + 1}" name="3" value = ${data.gameFound.round[i].score["3"]}></td>
+                    </tr>
+                    `
+                )
+            };
         },
         error: function(err){
             console.log(err);
@@ -23,12 +36,11 @@ function loadData(){
 
 let current = 0;
 
-$("#submit").on("click", function(){
+$("#submit").on("input", function(){
     $.ajax({
         url: "/api/games/" + gameId + "/addround",
         type: "GET",
         success: function(data){
-            console.log(data.newRound.round.length);
             current = data.newRound.round.length - 1;
             $(".table tbody").append(
                 `
